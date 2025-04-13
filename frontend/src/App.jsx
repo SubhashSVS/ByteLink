@@ -3,6 +3,7 @@ import './App.css'
 import LoginPage from './pages/LoginPage'
 import Dashboard from './pages/Dashboard'
 import Loading from './pages/Loading'
+import LandingPage from './pages/LandingPage'
 
 function App() {
 
@@ -10,9 +11,10 @@ function App() {
     <>
       <BrowserRouter>
           <Routes>
-            <Route path='/:shortId' element={<Loading />} />
+            <Route path='/' element={<LandingPage />} />
             <Route path='/login' element={<LoginPage />} />
             <Route path='/dashboard' element={<Dashboard/>} />
+            <Route path='/:shortId' element={<Loading />} />
           </Routes>
       </BrowserRouter>
     </>

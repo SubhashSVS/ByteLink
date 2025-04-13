@@ -15,14 +15,16 @@ const URLSchema = new mongoose.Schema({
         required : true
     },
     visitHistory : [{
-        timestamp : {
-            type : Number
-        }
+        timestamp : Date,
+        deviceType : String,
+        ip : String
     }],
     clicks : {
         type : Number,
         default : 0
-    }
+    },
+    expiryDate : Date,
+    createdAt : Date
 },{ timestamps : true});
 
 const User = mongoose.model('User', UserSchema);

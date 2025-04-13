@@ -1,10 +1,14 @@
 import Analytics from "../components/Analytics";
+import NavBar from "../components/NavBar";
 import Shortener from "../components/Shortener"
+import Statistics from "../components/Statistics";
 
 const Dashboard = () => {
     return <>
         <div className="">
-            <Shortener  />
+            <NavBar />
+            <Statistics />
+            <Shortener />
             <Analytics />
         </div>
     </>

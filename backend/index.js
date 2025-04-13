@@ -1,6 +1,7 @@
 const express = require("express")
 const jwt = require("jsonwebtoken")
 const cors = require("cors")
+const useragent = require("express-useragent")
 const {User, URL} = require("./db");
 const { nanoid } = require("nanoid");
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -9,6 +10,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 const app = express();
 app.use(express.json());
 app.use(cors());
+app.use(useragent.express());
 
 app.post('/api/login', async (req,res) => {
     const body = req.body;
@@ -40,13 +42,19 @@ app.post('/api/shorten', async (req,res) => {
     if(!body.url){
         res.json({error : "No url input"});
     }
+    const shortId = body.customAlias || nanoid(6);
 
-    const shortId = nanoid(6);
+    if(body.customAlias){
+        const check = await URL.findOne({shortId});
+        if(check) res.status(400).json({message : "Alias already taken"});
+    }
 
     await URL.create({
         shortId : shortId,
         redirectURL : body.url,
-        clicks : 0
+        clicks : 0,
+        createdAt : new Date(),
+        ...(body.expiryDate && { expiryDate : new Date(body.expiryDate) })
     });
 
     res.status(200).json({
@@ -55,32 +63,75 @@ app.post('/api/shorten', async (req,res) => {
 })
 
 app.get('/analytics', async (req,res) => {
-    const data = await URL.find().sort({createdAt : -1});
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const filter = req.query.filter || '';
+    const skip = (page - 1)*limit;
+
+    const search = filter ? {
+        $or : [
+            { shortId : {"$regex" : filter, "$options" : "i"} },
+            { redirectURL : {"$regex" : filter, "$options" : "i"}}
+        ] 
+    } : {};
+
+    const data = await URL.find(search).skip(skip).limit(limit).sort({createdAt : -1});
+    const total = await URL.countDocuments();
+
     res.status(200).json({
         data : data.map(item => ({
             url : item.redirectURL,
             shortUrl : item.shortId,
             clicks : item.clicks,
-            created : item.createdAt
-        }))
-    })
+            created : item.createdAt,
+            expiryDate : item.expiryDate
+        })),
+        page,
+        totalPages : Math.ceil(total/limit)
+    });
+})
+
+app.get('/stats', async (req,res) => {
+    const data = await URL.find();
+    let count = 0;
+    let active = 0;
+    for(let item of data){
+        count += item.clicks;
+        if(!item.expiryDate || new Date() < item.expiryDate){
+            active += 1;
+        }
+    }
+    res.status(200).json({
+        links : data.length,
+        clicks : count,
+        active : active
+    });
 })
 
 app.get('/:id', async (req,res) => {
     const id = req.params.id;
+    const deviceType = req.useragent.platform;
+    const ip = req.headers['x-forward-for'];
+
     const item = await URL.findOneAndUpdate({
         shortId : id
     },{
+        $push : {
+            visitHistory : {
+                timestamp : new Date(),
+                deviceType : deviceType,
+                ip : ip
+            }
+        },
         $inc : { clicks : 1 }
     });
 
     if(!item){
-        res.json({ error : "Invalid URL"});
+        return res.status(404).json({ error : "Invalid URL"});
     }
     res.status(200).json({
         url : item.redirectURL
     })
 })
-
 
 app.listen(3000);
