@@ -27,7 +27,31 @@ const URLSchema = new mongoose.Schema({
     createdAt : Date
 },{ timestamps : true});
 
+const dailyStatsSchema = new mongoose.Schema({
+    date : {
+        type : String,
+        required : true
+    },
+    totalClicks : {
+        type : Number,
+        default : 0
+    }
+});
+
+const deviceStatsSchema = new mongoose.Schema({
+    deviceType : {
+        type : String,
+        required : true
+    },
+    count : {
+        type : Number,
+        default : 0
+    }
+})
+
 const User = mongoose.model('User', UserSchema);
 const URL = mongoose.model('URL', URLSchema);
+const dailyStats = mongoose.model('DailyStats', dailyStatsSchema);
+const deviceStats = mongoose.model('DeviceStats', deviceStatsSchema);
 
-module.exports = {User, URL};
+module.exports = {User, URL, dailyStats, deviceStats};

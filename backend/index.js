@@ -2,7 +2,7 @@ const express = require("express")
 const jwt = require("jsonwebtoken")
 const cors = require("cors")
 const useragent = require("express-useragent")
-const {User, URL} = require("./db");
+const {User, URL, dailyStats, deviceStats} = require("./db");
 const { nanoid } = require("nanoid");
 const JWT_SECRET = process.env.JWT_SECRET;
 
@@ -129,9 +129,35 @@ app.get('/:id', async (req,res) => {
     if(!item){
         return res.status(404).json({ error : "Invalid URL"});
     }
+
+    await dailyStats.updateOne(
+        { date : new Date().toISOString().split("T")[0] },
+        { $inc : {
+            totalClicks : 1
+        }},
+        { upsert : true }
+    )
+
+    await deviceStats.updateOne(
+        { deviceType : deviceType },
+        { $inc : {
+            count : 1
+        }},
+        { upsert : true }
+    )
+
     res.status(200).json({
         url : item.redirectURL
     })
+})
+
+app.get('/api/charts', async (req,res) => {
+    const data1 = await dailyStats.find().sort({date : 1});
+    const data2 = await deviceStats.find();
+    res.json({
+        clicksData : data1,
+        deviceData : data2
+    });
 })
 
 app.listen(3000);
