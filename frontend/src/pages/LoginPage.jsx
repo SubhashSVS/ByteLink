@@ -10,10 +10,11 @@ const LoginPage = () => {
 
     const {login} = useAuth();
     const navigate = useNavigate();
+    const SERVER_API = import.meta.env.VITE-SERVER_API;
     
     const handleLogin = async () => {
         try {
-            const res = await axios.post('http://localhost:3000/api/login', {
+            const res = await axios.post(`${SERVER_API}/api/login`, {
                 username,
                 password
             });
