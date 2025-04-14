@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRef, useState } from "react";
 import useAnalytics from "../hooks/useAnalytics";
+import { Link2 } from "lucide-react";
 
 
 const Shortener = ()=>{
@@ -30,14 +31,17 @@ const Shortener = ()=>{
         <div className="my-3 flex-col space-y-4">
             <div className="flex-col space-y-2">
                 <div className="text-sm max-0.5">URL</div>
-                <input 
-                    placeholder="https://example.com/very/long/url"
-                    className="border border-gray-200 rounded-md p-2 w-full"
-                    ref={inputRef}
-                    onInput={(e)=>{
-                        setUrl(e.target.value);
-                    }}
-                />
+                <div className="flex items-center">
+                    <div className="p-2.5 border border-gray-200 rounded-l-lg text-gray-500"><Link2 size={20}/></div>
+                    <input 
+                        placeholder="https://example.com/very/long/url"
+                        className="border border-gray-200 rounded-r-md p-2 w-full"
+                        ref={inputRef}
+                        onInput={(e)=>{
+                            setUrl(e.target.value);
+                        }}
+                    />
+                </div>
             </div>
             <div className="flex space-x-6 ">
                 <div className="flex-col w-full space-y-2">

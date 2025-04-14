@@ -4,6 +4,7 @@ import Shortener from "../components/Shortener"
 import Statistics from "../components/Statistics";
 import { useNavigate } from "react-router-dom";
 import DashboardCards from "../components/DashboardCards";
+import QRModal from "../components/QRModal";
 
 const Dashboard = () => {
     const navigate = useNavigate();

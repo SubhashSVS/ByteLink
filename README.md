@@ -30,6 +30,7 @@ Use the credentials below to explore the app:
 - ✅ Async click logging (IP, timestamp, device type)
 - ✅ Charts & visual breakdown
 - ✅ Search & pagination support for the analytics
+- ✅ QR Code for generated short link
 
 ---
 

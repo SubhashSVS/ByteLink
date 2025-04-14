@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Entry from "./Entry";
 import axios from "axios";
 import useAnalytics from "../hooks/useAnalytics";
+import { Search } from "lucide-react";
 
 
 
@@ -26,10 +27,11 @@ const Analytics = ()=>{
 
     return (
         <div>
-            <div>
+            <div className="flex mx-8 mt-3 border border-gray-200 text-gray-500 rounded-md w-fit items-center p-2">
+                <Search size={20}/>
                 <input 
                     placeholder="Search links..."
-                    className="border border-gray-200 rounded-md p-2 mx-8 mt-2 "
+                    className="rounded-md px-2 outline-none"
                     onInput={(e)=>{
                         setFilter(e.target.value);
                         searchFilter();
@@ -37,19 +39,20 @@ const Analytics = ()=>{
                 />
             </div>
             <div className="border border-gray-300 rounded-md mx-8 text-gray-500 mt-4">
-                <div className="grid grid-cols-8 px-3 py-3">
+                <div className="grid grid-cols-9 px-3 py-3">
                     <div className="col-span-2">Original URL</div>
                     <div className="col-span-2">Short URL</div>
                     <div className="col-span-1">Clicks</div>
                     <div className="col-span-1">Created</div>
                     <div className="col-span-1">Expires</div>
                     <div className="col-span-1">Status</div>
+                    <div className="col-span-1">Actions</div>
                 </div>
                 { data.map(item => <Entry entry={item} key={item.shortUrl} />) }
             </div>
             <div className="flex justify-end items-center p-2 gap-x-1 m-6 mt-4">
                 <button 
-                    className="py-1 px-3 border border-gray-300 rounded text-gray-600 disabled:opacity-50 cursor-pointer"
+                    className="py-1 px-3 border border-gray-300 rounded text-gray-600 disabled:opacity-50 cursor-pointer hover:bg-gray-50"
                     disabled={page === 1}
                     onClick={ () => setPage(p => Math.max(p-1, 1)) }
                 >
@@ -57,7 +60,7 @@ const Analytics = ()=>{
                 </button>
                 <span className="p-1">Page {page} of {totalPages}</span>
                 <button
-                    className="py-1 px-3 border border-gray-300 rounded text-gray-600 disabled:opacity-50 cursor-pointer"
+                    className="py-1 px-3 border border-gray-300 rounded text-gray-600 disabled:opacity-50 cursor-pointer hover:bg-gray-50"
                     disabled={page === totalPages}
                     onClick={ () => setPage(p => Math.min(p+1, totalPages)) }
                 >

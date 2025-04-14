@@ -17,17 +17,24 @@ const Charts = () => {
     useEffect(() => {
         const fetchData = async () => {
             const res = await axios.get(`${SERVER_API}/api/charts`);
-            setClicksData(res.data.clicksData);
+            const data = res.data.clicksData.map(item => ({
+                ...item,
+                date : new Date(item.date).toLocaleDateString("en-US",{
+                    month : "short",
+                    day : "numeric" 
+                }) 
+            }))
+            setClicksData(data);
             setDeviceData(res.data.deviceData);
         }
         fetchData();
     },[refresh]);
 
 
-    return <div className="flex space-x-4 m-8">
+    return <div className="flex space-x-4 mx-8 my-5">
         <div className="w-full py-4 flex-col  border border-gray-200 rounded-lg shadow-xs space-y-1">
             <div className="text-2xl font-bold px-4">Clicks Over Time</div>
-            <div className="text-gray-500 text-md px-4">Link performance over the last 30 days</div>
+            <div className="text-gray-500 text-md px-4">Link performance over the time</div>
             <ResponsiveContainer width="90%" height={300} className="mt-6">
                 <LineChart data={clicksData}>
                     <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
