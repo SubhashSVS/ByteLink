@@ -10,7 +10,7 @@ const LoginPage = () => {
 
     const {login} = useAuth();
     const navigate = useNavigate();
-    const SERVER_API = import.meta.env.VITE-SERVER_API;
+    const SERVER_API = import.meta.env.VITE_SERVER_API;
     
     const handleLogin = async () => {
         try {
