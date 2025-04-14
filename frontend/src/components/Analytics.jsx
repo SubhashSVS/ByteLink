@@ -11,6 +11,7 @@ const Analytics = ()=>{
     const [filter, setFilter] = useState("");
     const [page, setPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
+    const [isLoading, setIsLoading] = useState(false);
 
     const limit = 5;
     const SERVER_API = import.meta.env.VITE_SERVER_API;
@@ -18,9 +19,16 @@ const Analytics = ()=>{
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await axios.get(`${SERVER_API}/analytics?page=${page}&limit=${limit}&filter=${filter}`);
-            setData(res.data.data);
-            setTotalPages(res.data.totalPages);
+            setIsLoading(true);
+            try{
+                const res = await axios.get(`${SERVER_API}/analytics?page=${page}&limit=${limit}&filter=${filter}`);
+                setData(res.data.data);
+                setTotalPages(res.data.totalPages);                
+            } catch(error){
+                console.log("Error fetching analytics : ",error);
+            } finally {
+                setIsLoading(false);
+            }
         };
         fetchData();
     },[refresh,page,filter]);

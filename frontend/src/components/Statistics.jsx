@@ -18,6 +18,7 @@ const Statistics = ()=>{
                 setLinks(res.data.links);
                 setClicks(res.data.clicks);
                 setActive(res.data.active);
+                setQrs(res.data.links);
             }            
         }
         fetch();

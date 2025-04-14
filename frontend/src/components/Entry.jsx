@@ -58,7 +58,7 @@ const Entry = ({entry})=>{
         {
             showQR && (
                 <QRModal 
-                    url={"https://google.com"} 
+                    url={CLIENT_URL+'/'+entry.shortUrl} 
                     onClose={() => {
                         setShowQR(false);
                 }}/>

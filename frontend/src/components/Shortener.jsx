@@ -2,26 +2,35 @@ import axios from "axios";
 import { useRef, useState } from "react";
 import useAnalytics from "../hooks/useAnalytics";
 import { Link2 } from "lucide-react";
+import Loader from "./Loader";
 
 
 const Shortener = ()=>{
     const [url, setUrl] = useState("");
     const [alias, setAlias] = useState("");
     const [date, setDate] = useState("");
+    const [isLoading, setIsLoading] = useState("");
     const serverAPI = import.meta.env.VITE_SERVER_API;
     const inputRef = useRef(null);
     const {triggerRefresh} = useAnalytics();
 
     const handleShortener = async ()=>{
-        const res = await axios.post(`${serverAPI}/api/shorten`,{
-            url : url,
-            customAlias : alias,
-            ...(date && { expiryDate : date })
-        })
-        if(res.data.shortId){
-            inputRef.current.value = "";
-            setUrl("");
-            triggerRefresh();
+        setIsLoading(true);
+        try{
+            const res = await axios.post(`${serverAPI}/api/shorten`,{
+                url : url,
+                customAlias : alias,
+                ...(date && { expiryDate : date })
+            })
+            if(res.data.shortId){
+                inputRef.current.value = "";
+                setUrl("");
+                triggerRefresh();
+            }
+        } catch(error){
+            console.log("Error creating short link : ",error);
+        } finally{
+            setIsLoading(false);
         }
     }
 
@@ -71,8 +80,16 @@ const Shortener = ()=>{
         <button
             className="bg-black text-white w-full p-2 font-medium rounded-md mt-2 cursor-pointer"
             onClick={handleShortener}
+            disabled={isLoading || !url}
         >
-            Create Short Link
+            {isLoading? (
+                <>
+                    <Loader size="sm" />
+                    Creating...
+                </>
+            ) : (
+                "Create Short Link"
+            )}
         </button>
     </div>
 }

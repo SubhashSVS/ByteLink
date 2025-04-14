@@ -3,10 +3,12 @@ import {useEffect, useState} from 'react';
 
 import {useNavigate} from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
+import Loader from '../components/Loader';
 
 const LoginPage = () => {           
     const [username, setUsername] = useState("user@bytelink.com");
     const [password, setPassword] = useState("Test@123");
+    const [isLoading, setIsLoading] = useState(false);
 
     const {login} = useAuth();
     const navigate = useNavigate();
@@ -15,9 +17,10 @@ const LoginPage = () => {
     useEffect(()=>{
         const token = localStorage.getItem('token');
         if(token) navigate('/dashboard');
-    })
+    },[]);
 
     const handleLogin = async () => {
+        setIsLoading(true);
         try {
             const res = await axios.post(`${SERVER_API}/api/login`, {
                 username,
@@ -32,6 +35,8 @@ const LoginPage = () => {
             }
         } catch (error) {
             console.error("Login error:", error.response?.data || error.message);
+        } finally{
+            setIsLoading(false);
         }
     }
 
@@ -68,7 +73,12 @@ const LoginPage = () => {
                     onClick={handleLogin}
                     className="py-2 mt-3 w-full border rounded bg-black text-white cursor-pointer active:bg-gray-700"
                     >
-                    Login
+                    {isLoading ? 
+                        <>
+                            <Loader size='sm' />
+                            Logging in...
+                        </>
+                        :"Login"}
                 </button>
             </div>
         </div>
