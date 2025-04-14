@@ -7,7 +7,7 @@ const NavBar = () => {
 
     const handleLogout = ()=>{
         logout();
-        navigate('/login');
+        navigate('/');
     }
     
     return <div className="flex justify-between py-4 px-8 border border-gray-200 shadow  z-10 sticky top-0 bg-white opacity-100">

@@ -24,36 +24,42 @@ const Charts = () => {
     },[refresh]);
 
 
-    return <div>
-        <h1>Clicks Chart</h1>
-        <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={clicksData}>
-                <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
-                <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
+    return <div className="flex space-x-4 m-8">
+        <div className="w-full py-4 flex-col  border border-gray-200 rounded-lg shadow-xs space-y-1">
+            <div className="text-2xl font-bold px-4">Clicks Over Time</div>
+            <div className="text-gray-500 text-md px-4">Link performance over the last 30 days</div>
+            <ResponsiveContainer width="90%" height={300} className="mt-6">
+                <LineChart data={clicksData}>
+                    <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
+                    <YAxis stroke="#888888" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(value) => `${value}`} />
+                    <Tooltip />
+                    <Line type="monotone" dataKey="totalClicks" stroke="#8884d8" strokeWidth={2} activeDot={{ r: 8 }} />
+                </LineChart>
+            </ResponsiveContainer>
+        </div>
+        <div className="w-full flex-col p-4 border border-gray-200 rounded-lg shadow-xs space-y-1">
+            <div className="text-2xl font-bold px-4">Device Breakdown</div>
+            <div className="text-gray-500 text-md px-4">Clicks by device type</div>
+            <ResponsiveContainer width="100%" height={300} className="mt-6">
+                <PieChart>
+                <Pie
+                    data={deviceData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="count"
+                    label={({ deviceType, percent }) => `${deviceType} ${(percent * 100).toFixed(0)}%`}
+                >
+                    {deviceData.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                </Pie>
                 <Tooltip />
-                <Line type="monotone" dataKey="totalClicks" stroke="#8884d8" strokeWidth={2} activeDot={{ r: 8 }} />
-            </LineChart>
-        </ResponsiveContainer>
-        <h1>Device Chart</h1>
-        <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-            <Pie
-                data={deviceData}
-                cx="50%"
-                cy="50%"
-                labelLine={false}
-                outerRadius={80}
-                fill="#8884d8"
-                dataKey="count"
-                label={({ deviceType, percent }) => `${deviceType} ${(percent * 100).toFixed(0)}%`}
-            >
-                {deviceData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-            </Pie>
-            <Tooltip />
-            </PieChart>
-        </ResponsiveContainer>
+                </PieChart>
+            </ResponsiveContainer>
+        </div>
     </div>
 }
 

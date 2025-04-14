@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import {useNavigate} from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
@@ -11,7 +11,12 @@ const LoginPage = () => {
     const {login} = useAuth();
     const navigate = useNavigate();
     const SERVER_API = import.meta.env.VITE_SERVER_API;
-    
+
+    useEffect(()=>{
+        const token = localStorage.getItem('token');
+        if(token) navigate('/dashboard');
+    })
+
     const handleLogin = async () => {
         try {
             const res = await axios.post(`${SERVER_API}/api/login`, {
