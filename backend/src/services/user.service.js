@@ -9,7 +9,10 @@ const register = async ( name, email, password ) => {
     throw new Error("Email already exists");
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  return userModel.createUser(name, email, hashedPassword);
+  const user = await userModel.createUser(name, email, hashedPassword);
+
+  const token = jwt.sign({ id : user.id }, jwtSecret, { expiresIn: "3d" });
+  return { user, token };
 }
 
 const login = async (email, password) => {
@@ -21,7 +24,7 @@ const login = async (email, password) => {
   if(!valid) 
     throw new Error("Invalid credentials");
 
-  const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "7d" });
+  const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "3d" });
   return { user, token };
 }
 

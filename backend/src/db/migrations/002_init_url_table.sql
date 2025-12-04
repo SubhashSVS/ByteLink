@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS urls (
+  id SERIAL PRIMARY KEY,
+  short_code VARCHAR(20) UNIQUE NOT NULL,
+  original_url TEXT NOT NULL,
+  created_by UUID REFERENCES users(id) ON DELETE CASCADE,
+  created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+  expires_at TIMESTAMP,
+  alias VARCHAR(20),
+  click_count INTEGER NOT NULL DEFAULT 0,
+  is_active BOOLEAN NOT NULL DEFAULT TRUE,
+  last_accessed_at TIMESTAMP
+);

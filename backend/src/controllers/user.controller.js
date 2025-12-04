@@ -1,11 +1,12 @@
 const userService = require("../services/user.service");
+const { sanitizeUser } = require("../utils/user-utils");
 
 const register = async (req, res) => {
   try {
     const { name, email, password } = req.body;
     const result = await userService.register(name, email, password);
 
-    res.json({ success: true, user: result });
+    res.json({ success: true, user: sanitizeUser(result.user), token: result.token });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
   }
@@ -16,7 +17,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const result = await userService.login(email, password);
 
-    res.json({ success: true, ...result });
+    res.json({ success: true, user: sanitizeUser(result.user), token: result.token });
   } catch (err) {
     res.status(400).json({ success: false, message: err.message });
   }
