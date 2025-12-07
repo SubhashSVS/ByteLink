@@ -11,7 +11,7 @@ const register = async ( name, email, password ) => {
   const hashedPassword = await bcrypt.hash(password, 10);
   const user = await userModel.createUser(name, email, hashedPassword);
 
-  const token = jwt.sign({ id : user.id }, jwtSecret, { expiresIn: "3d" });
+  const token = jwt.sign({ userId : user.id }, jwtSecret, { expiresIn: "3d" });
   return { user, token };
 }
 
@@ -24,7 +24,7 @@ const login = async (email, password) => {
   if(!valid) 
     throw new Error("Invalid credentials");
 
-  const token = jwt.sign({ id: user.id }, jwtSecret, { expiresIn: "3d" });
+  const token = jwt.sign({ userId: user.id }, jwtSecret, { expiresIn: "3d" });
   return { user, token };
 }
 

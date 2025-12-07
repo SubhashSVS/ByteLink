@@ -1,7 +1,7 @@
 const pool = require("../config/db");
 
 
-const createUrl = async (shortCode, originalUrl, userId, expiresAt, alias) => {
+const createUrl = async ( userId, shortCode, originalUrl, expiresAt, alias) => {
   const sql = `
     INSERT INTO urls (short_code, original_url, created_by, expires_at, alias)
     VALUES ($1, $2, $3, $4, $5)
